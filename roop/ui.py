@@ -55,7 +55,7 @@ list_files_process : list[ProcessEntry] = []
 
 
 def prepare_environment():
-    roop.globals.output_path = os.path.abspath(os.path.join(os.getcwd(), "output"))
+    roop.globals.output_path = '/content/drive/MyDrive/output'
     os.makedirs(roop.globals.output_path, exist_ok=True)
     os.environ["TEMP"] = os.environ["TMP"] = os.path.abspath(os.path.join(os.getcwd(), "temp"))
     os.makedirs(os.environ["TEMP"], exist_ok=True)
