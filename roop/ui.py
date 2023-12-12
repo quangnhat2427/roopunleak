@@ -102,6 +102,9 @@ def run():
             with gr.Row(variant='compact'):
                     gr.Markdown(f"### [{roop.metadata.name} {roop.metadata.version}](https://github.com/C0untFloyd/roop-unleashed)")
                     gr.HTML(util.create_version_html(), elem_id="versions")
+            with gr.Tab("Download"):
+                input_links = gr.Textbox(label="Enter the file links (one per line)", lines=5)
+                btn_download = gr.Button("Download", variant='primary', size='sm')
             with gr.Tab("🎭 Face Swap"):
                 with gr.Row(variant='panel'):
                     with gr.Column(scale=2):
@@ -274,7 +277,7 @@ def run():
             input_faces.select(on_select_input_face, None, None).then(fn=on_preview_frame_changed, inputs=previewinputs, outputs=[previewimage, mask_top])
             bt_remove_selected_input_face.click(fn=remove_selected_input_face, outputs=[input_faces])
             bt_srcimg.change(fn=on_srcimg_changed, show_progress='full', inputs=bt_srcimg, outputs=[dynamic_face_selection, face_selection, input_faces])
-
+            btn_download.click(fn=download_files,inputs=[input_links])
             mask_top.input(fn=on_mask_top_changed, inputs=[mask_top], show_progress='hidden')
 
 
@@ -918,6 +921,25 @@ def restart():
 
 def show_msg(msg: str):
     gr.Info(msg)
+import urllib.request
+
+def download_files(input_links):
+    folder_path = "/content/gg"
+    os.makedirs(folder_path, exist_ok=True)  # Tạo thư mục nếu chưa có
+    links = input_links.split("\n")
+    for link in links:
+        link = link.strip()
+        if link.startswith("http://") or link.startswith("https://"):
+            file_name = link.split("/")[-1]
+            save_directory = "/content/gg"
+            save_path = os.path.join(save_directory, file_name)
+            try:
+                urllib.request.urlretrieve(link, save_path)
+                print("Downloaded:", file_name)
+            except Exception as e:
+                print("Error downloading:", file_name, "-", str(e))
+        else:
+            print("Invalid URL:", link)
 
 
 
